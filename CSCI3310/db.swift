@@ -25,26 +25,35 @@ public class db {
   }
   
   func generateItem() -> Item {
-    let name = self.itemName[0]
     
-    let rareness = Rareness(rawValue: 0)!
+    let randomIndex = getRandomInt(self.itemName.count)
     
-    let hp = 10
+    let name = self.itemName[randomIndex]
     
-    let dmg = 10
+    let rareness = Rareness(rawValue: getRandomInt(4))!
+    
+    let hp = getRandomInt(10)
+    
+    let dmg = getRandomInt(10)
     
     return Item(name, rareness, hp, dmg)
   }
   
   func generateMonster() -> Monster {
   
-    let name = self.monsterName[0]
+    let randomIndex = getRandomInt(self.monsterName.count)
     
-    let hp = 10
+    let name = self.monsterName[randomIndex]
     
-    let dmg = 10
+    let hp = getRandomInt(100)
+    
+    let dmg = getRandomInt(100)
     
     return Monster(name, hp, dmg)
+  }
+  
+  func getRandomInt(_ range: Int) -> Int {
+    return Int(arc4random()) % range
   }
   
 }

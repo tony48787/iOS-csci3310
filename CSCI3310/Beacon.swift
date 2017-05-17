@@ -105,7 +105,7 @@ class Beacon: NSObject, NSCoding {
   
 }
 
-func == (item: Item, beacon: CLBeacon) -> Bool {
+func == (item: Beacon, beacon: CLBeacon) -> Bool {
   return ((beacon.proximityUUID.uuidString == item.uuid.uuidString)
     && (Int(beacon.major) == Int(item.majorValue))
     && (Int(beacon.minor) == Int(item.minorValue)))

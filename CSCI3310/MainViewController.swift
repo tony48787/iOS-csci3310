@@ -11,34 +11,60 @@ import CoreLocation
 let storedItemsKey = "storedItems"
 class MainViewController: UIViewController {
   
-    let locationManager = CLLocationManager()
-   var beacons = [Beacon]()
-    override func viewDidLoad() {
-        super.viewDidLoad()
-      
-        locationManager.requestAlwaysAuthorization()
-        locationManager.delegate = self
-        loadBeacons();
-        // Do any additional setup after loading the view.
-    }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
+  @IBOutlet weak var tableView: UITableView!
+  
+  let locationManager = CLLocationManager()
+  
+  var beacons = [Beacon]()
+  override func viewDidLoad() {
+    super.viewDidLoad()
+    locationManager.requestAlwaysAuthorization()
+    locationManager.delegate = self
+    
+    tableView.dataSource = self
+    tableView.delegate = self
+    
+    loadBeacons()
+    
+    
+    // Do any additional setup after loading the view.
+  }
+  
+  override func didReceiveMemoryWarning() {
+    super.didReceiveMemoryWarning()
+    // Dispose of any resources that can be recreated.
+  }
   
   func loadBeacons() {
     // todo: hard code an array of Beacon object
-    guard let storedItems = UserDefaults.standard.array(forKey: storedItemsKey) as? [Data] else { return }
-    for itemData in storedItems {
-      guard let beacon = NSKeyedUnarchiver.unarchiveObject(with: itemData) as? Beacon else { continue }
+    //    guard let storedItems = UserDefaults.standard.array(forKey: storedItemsKey) as? [Data] else { return }
+    //    for itemData in storedItems {
+    //      guard let beacon = NSKeyedUnarchiver.unarchiveObject(with: itemData) as? Beacon else { continue }
+    //      beacons.append(beacon)
+    //      startMonitoringItem(beacon)
+    //    }
+    // Development Mode
+    if(beacons.count == 0){
+      let beacon = Beacon(name: "Development", icon: 0, uuid: UUID.init(uuidString: "77777777-49A7-4DBF-914C-760D07FBB87B")!, majorValue: 7, minorValue: 8)
       beacons.append(beacon)
       startMonitoringItem(beacon)
     }
+    print("Loaded", beacons.count)
   }
+  
+  //  func persistItems() {
+  //    var itemsData = [Data]()
+  //    for item in items {
+  //      let itemData = NSKeyedArchiver.archivedData(withRootObject: item)
+  //      itemsData.append(itemData)
+  //    }
+  //    UserDefaults.standard.set(itemsData, forKey: storedItemsKey)
+  //    UserDefaults.standard.synchronize()
+  //  }
   
   func startMonitoringItem(_ beacon: Beacon) {
     let beaconRegion = beacon.asBeaconRegion()
+    
     locationManager.startMonitoring(for: beaconRegion)
     locationManager.startRangingBeacons(in: beaconRegion)
   }
@@ -48,16 +74,60 @@ class MainViewController: UIViewController {
     locationManager.stopMonitoring(for: beaconRegion)
     locationManager.stopRangingBeacons(in: beaconRegion)
   }
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
+  /*
+   // MARK: - Navigation
+   
+   // In a storyboard-based application, you will often want to do a little preparation before navigation
+   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+   // Get the new view controller using segue.destinationViewController.
+   // Pass the selected object to the new view controller.
+   }
+   */
 }
+
+// MARK: UITableViewDataSource
+extension MainViewController : UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    return beacons.count
+  }
+  
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: "Beacon", for: indexPath) as! BeaconTableViewCell
+    cell.beacon = beacons[indexPath.row]
+    return cell
+  }
+  
+  func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    return true
+  }
+  
+  func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    
+    if editingStyle == .delete {
+      stopMonitoringItem(beacons[indexPath.row])
+      tableView.beginUpdates()
+      beacons.remove(at: indexPath.row)
+      tableView.deleteRows(at: [indexPath], with: .automatic)
+      tableView.endUpdates()
+      
+      //persistItems()
+    }
+  }
+}
+
+// MARK: UITableViewDelegate
+extension MainViewController: UITableViewDelegate {
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    tableView.deselectRow(at: indexPath, animated: true)
+    
+    let item = beacons[indexPath.row]
+    let detailMessage = "UUID: \(item.uuid.uuidString)\nMajor: \(item.majorValue)\nMinor: \(item.minorValue)"
+    let detailAlert = UIAlertController(title: "Details", message: detailMessage, preferredStyle: .alert)
+    detailAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+    self.present(detailAlert, animated: true, completion: nil)
+  }
+}
+
 
 extension MainViewController: CLLocationManagerDelegate {
   func locationManager(_ manager: CLLocationManager, monitoringDidFailFor region: CLRegion?, withError error: Error) {
@@ -68,7 +138,26 @@ extension MainViewController: CLLocationManagerDelegate {
     print("Location manager failed: \(error.localizedDescription)")
   }
   
-  func locationManager(_ manager: CLLocationManager, didRangeBeacons beacons: [CLBeacon], in region: CLBeaconRegion) {
-    
+  func locationManager(_ manager: CLLocationManager, didRangeBeacons _beacons: [CLBeacon], in region: CLBeaconRegion) {
+    // Find the same beacons in the table.
+    var indexPaths = [IndexPath]()
+    for _beacon in _beacons {
+      for row in 0..<self.beacons.count {
+        // Determine if item is equal to ranged beacon
+        if self.beacons[row] == _beacon {
+          self.beacons[row].beacon = _beacon
+          indexPaths += [IndexPath(row: row, section: 0)]
+        }
+      }
+    }
+    print(indexPaths)
+    // Update beacon locations of visible rows.
+    if let visibleRows = tableView.indexPathsForVisibleRows {
+      let rowsToUpdate = visibleRows.filter { indexPaths.contains($0) }
+      for row in rowsToUpdate {
+        let cell = tableView.cellForRow(at: row) as! BeaconTableViewCell
+        cell.refreshLocation()
+      }
+    }
   }
 }

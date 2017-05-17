@@ -23,6 +23,8 @@
 		CD53BFEE1ECC065200C71226 /* db.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD53BFED1ECC065200C71226 /* db.swift */; };
 		CD53BFF01ECC556800C71226 /* Icons.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD53BFEF1ECC556800C71226 /* Icons.swift */; };
 		CD53BFF41ECC562600C71226 /* Beacon.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD53BFF31ECC562600C71226 /* Beacon.swift */; };
+		CD53BFF61ECCB41B00C71226 /* FightBossViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD53BFF51ECCB41B00C71226 /* FightBossViewController.swift */; };
+		CD53BFF91ECCB85600C71226 /* BeaconTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD53BFF81ECCB85600C71226 /* BeaconTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 		CD53BFED1ECC065200C71226 /* db.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = db.swift; sourceTree = "<group>"; };
 		CD53BFEF1ECC556800C71226 /* Icons.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Icons.swift; sourceTree = "<group>"; };
 		CD53BFF31ECC562600C71226 /* Beacon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Beacon.swift; sourceTree = "<group>"; };
+		CD53BFF51ECCB41B00C71226 /* FightBossViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FightBossViewController.swift; sourceTree = "<group>"; };
+		CD53BFF81ECCB85600C71226 /* BeaconTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BeaconTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -97,6 +101,7 @@
 		CD53BFBA1ECBF9CA00C71226 /* CSCI3310 */ = {
 			isa = PBXGroup;
 			children = (
+				CD53BFF71ECCB77600C71226 /* view */,
 				CD53BFDE1ECBFAFB00C71226 /* modal */,
 				CD53BFDD1ECBFAE800C71226 /* controller */,
 				CD53BFBB1ECBF9CA00C71226 /* AppDelegate.swift */,
@@ -123,6 +128,7 @@
 				CD53BFDB1ECBFA7000C71226 /* MainViewController.swift */,
 				CD53BFE91ECC00DE00C71226 /* InventoryViewController.swift */,
 				CD53BFEB1ECC00EB00C71226 /* MiniGameViewController.swift */,
+				CD53BFF51ECCB41B00C71226 /* FightBossViewController.swift */,
 			);
 			name = controller;
 			sourceTree = "<group>";
@@ -140,6 +146,14 @@
 				CD53BFF31ECC562600C71226 /* Beacon.swift */,
 			);
 			name = modal;
+			sourceTree = "<group>";
+		};
+		CD53BFF71ECCB77600C71226 /* view */ = {
+			isa = PBXGroup;
+			children = (
+				CD53BFF81ECCB85600C71226 /* BeaconTableViewCell.swift */,
+			);
+			name = view;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -187,7 +201,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0810;
-				LastUpgradeCheck = 0810;
+				LastUpgradeCheck = 0830;
 				ORGANIZATIONNAME = CSCI3310;
 				TargetAttributes = {
 					CD53BFB71ECBF9C900C71226 = {
@@ -248,12 +262,14 @@
 			files = (
 				CD53BFEC1ECC00EB00C71226 /* MiniGameViewController.swift in Sources */,
 				CD53BFE61ECBFB3100C71226 /* Level.swift in Sources */,
+				CD53BFF61ECCB41B00C71226 /* FightBossViewController.swift in Sources */,
 				CD53BFE41ECBFB2800C71226 /* Monster.swift in Sources */,
 				CD53BFE21ECBFB1C00C71226 /* Item.swift in Sources */,
 				CD53BFBC1ECBF9CA00C71226 /* AppDelegate.swift in Sources */,
 				CD53BFF01ECC556800C71226 /* Icons.swift in Sources */,
 				CD53BFE01ECBFB0E00C71226 /* Player.swift in Sources */,
 				CD53BFEA1ECC00DE00C71226 /* InventoryViewController.swift in Sources */,
+				CD53BFF91ECCB85600C71226 /* BeaconTableViewCell.swift in Sources */,
 				CD53BFEE1ECC065200C71226 /* db.swift in Sources */,
 				CD53BFDC1ECBFA7000C71226 /* MainViewController.swift in Sources */,
 				CD53BFE81ECBFBDB00C71226 /* SpawnPoint.swift in Sources */,
@@ -317,6 +333,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -366,6 +383,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_SUSPICIOUS_MOVES = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
