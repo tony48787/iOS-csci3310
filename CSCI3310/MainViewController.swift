@@ -35,7 +35,7 @@ class MainViewController: UIViewController {
     
     loadBeacons()
     
-    
+    self.view.bringSubview(toFront: monsterBtnView)
     
     tbvc = self.tabBarController as? ParentTBViewController
     
@@ -47,6 +47,7 @@ class MainViewController: UIViewController {
   override func viewDidDisappear(_ animated: Bool) {
     monsterBtnView.isUserInteractionEnabled = false
     monsterBtnView.setImage(UIImage(named: "egg"), for: .normal)
+    self.view.bringSubview(toFront: monsterBtnView)
     spawnCount = 0
   }
   
