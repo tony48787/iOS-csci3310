@@ -30,43 +30,47 @@ class MiniGameViewController: UIViewController {
     print("______")
     monsterView.image = monster?.icon
     progressView.setProgress(1.0, animated: true)
-    // Swape Motion
-    let directions: [UISwipeGestureRecognizerDirection] = [.right, .left, .up, .down]
-    for direction in directions {
-      let gesture = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
-      gesture.direction = direction
-      self.view.addGestureRecognizer(gesture)
-    }
+    
+    // HP Bar Outline
+    progressView.layer.borderWidth = 0.5
+    progressView.layer.borderColor = UIColor.black.cgColor
+    progressView.transform = progressView.transform.scaledBy(x: 1, y: 10)
     
     // Shake Motion
     motionManager.accelerometerUpdateInterval = 0.2
     motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { (data, error) in
       if let myData = data {
         if myData.acceleration.y > 0.1 {
-          self.count = self.count + 1
-          print ("shaking \(self.count)")
-          
-          let hp = Float((self.monster?.hp)!)
-          
-          let remaining = (hp - Float(self.count)) / hp
-          
-          print(remaining)
-          
-          self.progressView.setProgress(remaining, animated: true)
-          
-          
-          if(remaining <= 0){
-            //Generate random Item
-            let item = db.generateItem()
             
-            self.player!.addItem(item)
+            self.count = self.count + 1
+            print ("shaking \(self.count)")
+          
+            let hp = Float((self.monster?.hp)!)
+          
+            let remaining = (hp - Float(self.count)) / hp
+          
+            print(remaining)
+          
+            self.progressView.setProgress(remaining, animated: true)
             
+            let coffeeShakeAnimation = CABasicAnimation(keyPath: "position")
+            coffeeShakeAnimation.duration = 0.05
+            coffeeShakeAnimation.repeatCount = 5
+            coffeeShakeAnimation.autoreverses = true
+            coffeeShakeAnimation.fromValue = CGPoint(x:self.monsterView.center.x - 10, y:self.monsterView.center.y)
+            coffeeShakeAnimation.toValue = CGPoint(x:self.monsterView.center.x + 10, y:self.monsterView.center.y)
+            self.monsterView.layer.add(coffeeShakeAnimation, forKey: "position")
+          
+          
+            if(remaining <= 0){
+                //Generate random Item
+                let item = db.generateItem()
+                self.player!.addItem(item)
             
+                print("Inventory")
+                print(self.player!.inventory)
             
-            print("Inventory")
-            print(self.player!.inventory)
-            
-            self.performSegue(withIdentifier: "minigameBackToMain", sender: self)
+                self.performSegue(withIdentifier: "minigameBackToMain", sender: self)
           }
         }
       }
@@ -77,25 +81,9 @@ class MiniGameViewController: UIViewController {
     super.didReceiveMemoryWarning()
     // Dispose of any resources that can be recreated.
     
-    
   }
   
-  func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-    if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-      switch swipeGesture.direction {
-      case UISwipeGestureRecognizerDirection.right:
-        print("Swiped right")
-      case UISwipeGestureRecognizerDirection.down:
-        print("Swiped down")
-      case UISwipeGestureRecognizerDirection.left:
-        print("Swiped left")
-      case UISwipeGestureRecognizerDirection.up:
-        print("Swiped up")
-      default:
-        break
-      }
-    }
-  }
+  
   
   
    // MARK: - Navigation
