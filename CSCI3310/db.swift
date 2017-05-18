@@ -28,7 +28,9 @@ public class db {
     
     let dmg = getRandomInt(10)
     
-    return Item(name, rareness, hp, dmg)
+    let icon = getRandomIcon()
+    
+    return Item(name, rareness, hp, dmg, icon)
   }
   
   static func generateMonster() -> Monster {
@@ -37,9 +39,9 @@ public class db {
     
     let name = self.monsterName[randomIndex]
     
-    let hp = getRandomInt(100)
+    let hp = getRandomInt(20)
     
-    let dmg = getRandomInt(100)
+    let dmg = getRandomInt(20)
     
     let icon = getRandomIcon()
     
