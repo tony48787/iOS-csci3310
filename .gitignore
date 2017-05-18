@@ -1,10 +1,25 @@
-UserInterfaceState.xcuserstate
-build
+c OS X
+*.DS_Store
+
+# Xcode
 *.pbxuser
-*.perspectivev3
 *.mode1v3
-*~
-*~.nib
-*~.xib 
-*.DS_Store 
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+project.xcworkspace/
 xcuserdata/
+*.xcuserstate
+# Generated files
+*.o
+*.pyc
+
+
+#Python modules
+MANIFEST
+dist/
+build/
+
+# Backup files
+*~.nib
+

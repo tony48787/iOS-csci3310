@@ -47,6 +47,11 @@ class Beacon: NSObject, NSCoding {
     self.minorValue = CLBeaconMinorValue(minorValue)
   }
   
+  func getProximity() -> String {
+    guard let beacon = beacon else { return "unknown" }
+    return nameForProximity(beacon.proximity)
+  }
+  
   // get location inform
   func locationString() -> String {
     guard let beacon = beacon else { return "Location: Unknown" }

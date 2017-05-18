@@ -13,9 +13,18 @@ class MainViewController: UIViewController {
   
   @IBOutlet weak var tableView: UITableView!
   
-  let locationManager = CLLocationManager()
+  @IBOutlet weak var monsterBtnView: UIButton!
   
+  @IBAction func monsterBtn(_ sender: Any) {
+    performSegue(withIdentifier: "mainToMinigame", sender: self)
+  }
+  
+  let locationManager = CLLocationManager()
+  var spawnCount = 0
   var beacons = [Beacon]()
+  
+  var player: Player = Player("Hong", [], 1, 10, 10)
+  var monster: Monster?
   override func viewDidLoad() {
     super.viewDidLoad()
     locationManager.requestAlwaysAuthorization()
@@ -26,6 +35,7 @@ class MainViewController: UIViewController {
     
     loadBeacons()
     
+    monsterBtnView.isUserInteractionEnabled = false
     
     // Do any additional setup after loading the view.
   }
@@ -74,15 +84,22 @@ class MainViewController: UIViewController {
     locationManager.stopMonitoring(for: beaconRegion)
     locationManager.stopRangingBeacons(in: beaconRegion)
   }
-  /*
+  
    // MARK: - Navigation
    
    // In a storyboard-based application, you will often want to do a little preparation before navigation
    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
    // Get the new view controller using segue.destinationViewController.
    // Pass the selected object to the new view controller.
-   }
-   */
+  
+    if(segue.identifier == "mainToMinigame"){
+      let controller = segue.destination as! MiniGameViewController
+      
+      controller.player = self.player
+      controller.monster = self.monster
+    }
+  }
+ 
 }
 
 // MARK: UITableViewDataSource
@@ -147,10 +164,11 @@ extension MainViewController: CLLocationManagerDelegate {
         if self.beacons[row] == _beacon {
           self.beacons[row].beacon = _beacon
           indexPaths += [IndexPath(row: row, section: 0)]
+          
         }
       }
     }
-    print(indexPaths)
+    
     // Update beacon locations of visible rows.
     if let visibleRows = tableView.indexPathsForVisibleRows {
       let rowsToUpdate = visibleRows.filter { indexPaths.contains($0) }
@@ -159,5 +177,28 @@ extension MainViewController: CLLocationManagerDelegate {
         cell.refreshLocation()
       }
     }
+    
+    //Spawn a monster if close
+    for row in 0..<self.beacons.count {
+      
+      let proximity = self.beacons[row].getProximity()
+      
+      if proximity == "Immediate" && spawnCount == 0{
+        //Spawn
+        
+        self.monster = db.generateMonster()
+        
+        monsterBtnView.setImage(self.monster!.icon, for: .normal)
+        
+        monsterBtnView.isUserInteractionEnabled = true
+        
+        
+        
+        spawnCount += 1
+      }
+      
+      
+    }
+    
   }
 }

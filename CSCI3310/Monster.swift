@@ -13,11 +13,13 @@ public class Monster {
   var name: String
   var hp: Int
   var dmg: Int
+  var icon: UIImage
   
-  public init(_ name: String, _ hp: Int, _ dmg: Int){
+  public init(_ name: String, _ hp: Int, _ dmg: Int, _ icon: UIImage){
     self.name = name
     self.hp = hp
     self.dmg = dmg
+    self.icon = icon
   }
   
 }

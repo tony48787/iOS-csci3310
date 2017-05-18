@@ -12,7 +12,7 @@
         <!--Fight!-->
         <scene sceneID="1Hf-9z-PSs">
             <objects>
-                <viewController id="jMq-Fa-TCD" customClass="MiniGameViewController" customModule="CSCI3310" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="jMq-Fa-TCD" customClass="FightBossViewController" customModule="CSCI3310" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="wfL-hI-bgO"/>
                         <viewControllerLayoutGuide type="bottom" id="OcL-To-BQK"/>
@@ -80,17 +80,61 @@
                                     </tableViewCell>
                                 </prototypes>
                             </tableView>
+                            <button opaque="NO" contentMode="center" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="f0j-JQ-8rk">
+                                <rect key="frame" x="33" y="76" width="310" height="256"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" title="Button" image="marker"/>
+                                <connections>
+                                    <action selector="monsterBtn:" destination="zqR-Zu-97P" eventType="touchUpInside" id="beu-GP-vnb"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Map" id="9IQ-z1-vNO"/>
                     <connections>
+                        <outlet property="monsterBtnView" destination="f0j-JQ-8rk" id="bfq-bO-xtf"/>
                         <outlet property="tableView" destination="zew-ru-gbJ" id="B1P-jH-t6X"/>
+                        <segue destination="NXf-KY-mbZ" kind="show" identifier="mainToMinigame" id="fQH-SJ-ZoA"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="noC-c4-FFx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="400.80000000000001" y="-776.76161919040487"/>
+            <point key="canvasLocation" x="400.80000000000001" y="-777.66116941529242"/>
+        </scene>
+        <!--Mini Game View Controller-->
+        <scene sceneID="3Pr-v4-JPo">
+            <objects>
+                <viewController id="NXf-KY-mbZ" customClass="MiniGameViewController" customModule="CSCI3310" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="Cj5-lr-Rje"/>
+                        <viewControllerLayoutGuide type="bottom" id="B9m-K7-YB7"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="1kh-Vo-sBE">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" progress="1" translatesAutoresizingMaskIntoConstraints="NO" id="12x-ga-cT5">
+                                <rect key="frame" x="67" y="141" width="240" height="2"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </progressView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6EB-Za-HWk">
+                                <rect key="frame" x="62" y="208" width="250" height="250"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            </imageView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <color key="tintColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    </view>
+                    <connections>
+                        <outlet property="monsterView" destination="6EB-Za-HWk" id="N3P-bl-XYs"/>
+                        <outlet property="progressView" destination="12x-ga-cT5" id="2H4-nq-5VT"/>
+                        <segue destination="zqR-Zu-97P" kind="show" identifier="minigameBackToMain" id="dXW-AZ-JfV"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="88d-uY-Gz0" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1296.8" y="-777.66116941529242"/>
         </scene>
         <!--Inventory-->
         <scene sceneID="PRz-Wm-U4M">
@@ -131,4 +175,10 @@
             <point key="canvasLocation" x="-975" y="-55"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="marker" width="256" height="256"/>
+    </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="dXW-AZ-JfV"/>
+    </inferredMetricsTieBreakers>
 </document>

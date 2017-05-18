@@ -10,21 +10,13 @@ import UIKit
 
 public class db {
   
-  var itemName: [String]
-  var monsterName: [String]
+  static var itemName = ["Long Sword", "Chainsword", "Lightning Claw","Power Axe", "Grav-pistol",
+  "Genestealer Claw", "Plasma pistol", "Long Sword"]
+  static var monsterName = ["Mournhag", "Warpsnake", "Vampboy","Abysspod", "The Bruised Abortion",
+  "The Agile Presence", "The Dangerous Teeth", "The Hidden Hunting Yak",
+  "The Barb-Tailed Sun Bear"]
   
-  public init(){
-    
-    self.itemName = ["Long Sword", "Chainsword", "Lightning Claw","Power Axe", "Grav-pistol",
-                               "Genestealer Claw", "Plasma pistol", "Long Sword"]
-    
-   
-    self.monsterName = ["Mournhag", "Warpsnake", "Vampboy","Abysspod", "The Bruised Abortion",
-                               "The Agile Presence", "The Dangerous Teeth", "The Hidden Hunting Yak",
-                               "The Barb-Tailed Sun Bear"]
-  }
-  
-  func generateItem() -> Item {
+  static func generateItem() -> Item {
     
     let randomIndex = getRandomInt(self.itemName.count)
     
@@ -39,7 +31,7 @@ public class db {
     return Item(name, rareness, hp, dmg)
   }
   
-  func generateMonster() -> Monster {
+  static func generateMonster() -> Monster {
   
     let randomIndex = getRandomInt(self.monsterName.count)
     
@@ -49,11 +41,19 @@ public class db {
     
     let dmg = getRandomInt(100)
     
-    return Monster(name, hp, dmg)
+    let icon = getRandomIcon()
+    
+    return Monster(name, hp, dmg, icon)
   }
   
-  func getRandomInt(_ range: Int) -> Int {
+  static func getRandomInt(_ range: Int) -> Int {
     return Int(arc4random()) % range
+  }
+  
+  static func getRandomIcon() -> UIImage {
+    let randomIndex = getRandomInt(10)
+    
+    return UIImage(named: "icon\(randomIndex).png")!
   }
   
 }
