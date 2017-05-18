@@ -21,12 +21,14 @@ public class Item {
   var name: String
   var hp: Int
   var dmg: Int
+  var icon: UIImage
   
-  public init(_ name: String, _ rareness: Rareness, _ hp: Int, _ dmg: Int){
+  public init(_ name: String, _ rareness: Rareness, _ hp: Int, _ dmg: Int, _ icon: UIImage){
     self.name = name
     self.rareness = rareness
     self.hp = hp
     self.dmg = dmg
+    self.icon = icon
   }
   
 }

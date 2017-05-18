@@ -23,8 +23,8 @@ class MainViewController: UIViewController {
   var spawnCount = 0
   var beacons = [Beacon]()
   
-  var player: Player = Player("Hong", [], 1, 10, 10)
-  var monster: Monster?
+  var tbvc: ParentTBViewController?
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     locationManager.requestAlwaysAuthorization()
@@ -35,9 +35,19 @@ class MainViewController: UIViewController {
     
     loadBeacons()
     
+    
+    
+    tbvc = self.tabBarController as? ParentTBViewController
+    
     monsterBtnView.isUserInteractionEnabled = false
     
     // Do any additional setup after loading the view.
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    monsterBtnView.isUserInteractionEnabled = false
+    monsterBtnView.setImage(UIImage(named: "egg"), for: .normal)
+    spawnCount = 0
   }
   
   override func didReceiveMemoryWarning() {
@@ -88,17 +98,17 @@ class MainViewController: UIViewController {
    // MARK: - Navigation
    
    // In a storyboard-based application, you will often want to do a little preparation before navigation
-   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-   // Get the new view controller using segue.destinationViewController.
-   // Pass the selected object to the new view controller.
-  
-    if(segue.identifier == "mainToMinigame"){
-      let controller = segue.destination as! MiniGameViewController
-      
-      controller.player = self.player
-      controller.monster = self.monster
-    }
-  }
+//   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//   // Get the new view controller using segue.destinationViewController.
+//   // Pass the selected object to the new view controller.
+//  
+//    if(segue.identifier == "mainToMinigame"){
+//      let controller = segue.destination as! MiniGameViewController
+//      
+//      controller.player = tbvc?.player
+//      controller.monster = tbvc?.monster
+//    }
+//  }
  
 }
 
@@ -183,16 +193,17 @@ extension MainViewController: CLLocationManagerDelegate {
       
       let proximity = self.beacons[row].getProximity()
       
-      if proximity == "Immediate" && spawnCount == 0{
+      if (proximity == "Immediate" || proximity == "Near") && spawnCount == 0{
+        
+        
+        
         //Spawn
         
-        self.monster = db.generateMonster()
+        tbvc?.monster = db.generateMonster()
         
-        monsterBtnView.setImage(self.monster!.icon, for: .normal)
+        monsterBtnView.setImage(tbvc?.monster!.icon, for: .normal)
         
         monsterBtnView.isUserInteractionEnabled = true
-        
-        
         
         spawnCount += 1
       }

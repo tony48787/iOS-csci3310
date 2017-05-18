@@ -21,14 +21,19 @@ class MiniGameViewController: UIViewController {
   
   var player: Player?
   
+  var tbvc: ParentTBViewController?
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
-    print("Minigame Controller")
-    print(player?.hp)
-    print(monster?.hp)
-    print("______")
-    monsterView.image = monster?.icon
+    tbvc = self.tabBarController as? ParentTBViewController
+    
+    guard let player = tbvc?.player else { return }
+    guard let monster = tbvc?.monster else { return }
+    
+    self.count = 0
+    
+    monsterView.image = monster.icon
     progressView.setProgress(1.0, animated: true)
     // Swape Motion
     let directions: [UISwipeGestureRecognizerDirection] = [.right, .left, .up, .down]
@@ -39,38 +44,18 @@ class MiniGameViewController: UIViewController {
     }
     
     // Shake Motion
-    motionManager.accelerometerUpdateInterval = 0.2
-    motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { (data, error) in
-      if let myData = data {
-        if myData.acceleration.y > 0.1 {
-          self.count = self.count + 1
-          print ("shaking \(self.count)")
-          
-          let hp = Float((self.monster?.hp)!)
-          
-          let remaining = (hp - Float(self.count)) / hp
-          
-          print(remaining)
-          
-          self.progressView.setProgress(remaining, animated: true)
-          
-          
-          if(remaining <= 0){
-            //Generate random Item
-            let item = db.generateItem()
-            
-            self.player!.addItem(item)
-            
-            
-            
-            print("Inventory")
-            print(self.player!.inventory)
-            
-            self.performSegue(withIdentifier: "minigameBackToMain", sender: self)
-          }
-        }
-      }
-    }
+    
+    monitorUpdate()
+  }
+  
+  override func viewDidDisappear(_ animated: Bool) {
+    //De register
+    self.motionManager.stopAccelerometerUpdates()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    //register
+    monitorUpdate()
   }
   
   override func didReceiveMemoryWarning() {
@@ -97,22 +82,58 @@ class MiniGameViewController: UIViewController {
     }
   }
   
+  func monitorUpdate(){
+    motionManager.accelerometerUpdateInterval = 0.2
+    motionManager.startAccelerometerUpdates(to: OperationQueue.current!) { (data, error) in
+      if let myData = data {
+        if myData.acceleration.y > 0.1 {
+          self.count = self.count + 1
+          print ("shaking \(self.count)")
+          
+          let hp = Float((self.tbvc?.monster?.hp)!)
+          
+          let remaining = (hp - Float(self.count)) / hp
+          
+          print(remaining)
+          
+          self.progressView.setProgress(remaining, animated: true)
+          
+          
+          if(remaining <= 0){
+            //De register
+            self.motionManager.stopAccelerometerUpdates()
+            
+            //Generate random Item
+            let item = db.generateItem()
+            
+            self.tbvc?.player.addItem(item)
+            
+            let detailAlert = UIAlertController(title: "Details", message: "New Item", preferredStyle: .alert)
+            
+            let imageView = UIImageView(image: item.icon)
+            
+            detailAlert.inputView?.addSubview(imageView)
+            
+            detailAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
+            self.present(detailAlert, animated: true, completion: nil)
+            
+          }
+        }
+      }
+    }
+  }
+  
   
    // MARK: - Navigation
    
    // In a storyboard-based application, you will often want to do a little preparation before navigation
-   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-   // Get the new view controller using segue.destinationViewController.
-   // Pass the selected object to the new view controller.
-    if(segue.identifier == "minigameBackToMain"){
-      let controller = segue.destination as! MainViewController
-      
-      controller.player = self.player!
-      controller.monster = self.monster
-    }
-  
-  }
- 
+//   override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//   // Get the new view controller using segue.destinationViewController.
+//   // Pass the selected object to the new view controller.
+//    if(segue.identifier == "minigameBackToMain"){
+//      let controller = segue.destination as! MainViewController
+//    
+//    }
   
   
   
