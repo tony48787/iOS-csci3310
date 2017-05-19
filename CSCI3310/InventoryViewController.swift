@@ -98,7 +98,10 @@ extension InventoryViewController: UITableViewDelegate {
     tableView.deselectRow(at: indexPath, animated: true)
     
     let item = self.tbvc?.player.inventory[indexPath.row]
-    let detailMessage = "Name: \(String(describing: item?.name))\nRareness: \(String(describing: item?.rareness))\nhp: \(String(describing: item?.hp))\ndmg: \(String(describing: item?.dmg))"
+    var detailMessage = ""
+    if let name = item?.name, let rareness = item?.rareness, let hp = item?.hp, let dmg = item?.dmg {
+      detailMessage = "Name: \(name)\nRareness: \(rareness)\nhp: \(hp)\ndmg: \(dmg)"
+    }
     let detailAlert = UIAlertController(title: "Details", message: detailMessage, preferredStyle: .alert)
     detailAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
     self.present(detailAlert, animated: true, completion: nil)

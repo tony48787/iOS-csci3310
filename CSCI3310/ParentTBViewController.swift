@@ -13,6 +13,8 @@ class ParentTBViewController: UITabBarController {
   var player = Player("Hong", [], 1, 10, 10)
   var monster: Monster?
   
+  var spawnPoint = [String: Int]()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     

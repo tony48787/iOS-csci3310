@@ -143,7 +143,7 @@ class FightBossViewController: UIViewController {
       timer?.invalidate()
       timer = nil
       //Force end game
-      alert("Time's Up!", "We are sorry to inform you that you are not qualified to get this item!", UIImage(named: "egg")!)
+      alert("Time's Up!", "Please find a better weapon.", UIImage(named: "egg")!)
     }
   }
 
