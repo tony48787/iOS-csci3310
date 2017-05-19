@@ -25,6 +25,8 @@ class MainViewController: UIViewController {
   
   var monsters = [String: Monster]()
   
+  var monstersImageView = [String: UIImageView]()
+  
   var tbvc: ParentTBViewController?
   
   var prev_dist: CLLocationAccuracy?
@@ -73,11 +75,13 @@ class MainViewController: UIViewController {
         if(beacons.count == 0){
             let beacon = Beacon(name: "Development A", icon: 0, uuid: UUID.init(uuidString: "77777777-49A7-4DBF-914C-760D07FBB87A")!, majorValue: 7, minorValue: 8)
             let beacon2 = Beacon(name: "Development B", icon: 0, uuid: UUID.init(uuidString: "77777777-49A7-4DBF-914C-760D07FBB87B")!, majorValue: 7, minorValue: 8)
-            
+            let beacon3 = Beacon(name: "Development C", icon: 0, uuid: UUID.init(uuidString: "77777777-49A7-4DBF-914C-760D07FBB87C")!, majorValue: 7, minorValue: 8)
             beacons.append(beacon)
             beacons.append(beacon2)
+            beacons.append(beacon3)
             startMonitoringItem(beacon)
             startMonitoringItem(beacon2)
+            startMonitoringItem(beacon3)
         }
         print("Loaded", beacons.count)
     }
@@ -288,11 +292,13 @@ extension MainViewController: CLLocationManagerDelegate {
                 }
                 if (nearest_beacon1 == 1 && nearest_beacon2 == 2) {
                     print("case3")
-                    monsterBtnView.center = CGPoint(x: 260, y: 92)
+                    let offset = 75.5 * (curr_dists[nearest_beacon1]/curr_dists[nearest_beacon2])
+                    monsterBtnView.center = CGPoint(x: 260 - offset, y: 92)
                 }
                 if (nearest_beacon1 == 2 && nearest_beacon2 == 1) {
                     print("case4")
-                    monsterBtnView.center = CGPoint(x: 109, y: 92)
+                    let offset = 75.5 * (curr_dists[nearest_beacon1]/curr_dists[nearest_beacon2])
+                    monsterBtnView.center = CGPoint(x: 109 + offset, y: 92)
                 }
             }
 //            prev_dist = curr_dists[nearest_beacon1]
@@ -311,12 +317,13 @@ extension MainViewController: CLLocationManagerDelegate {
                 
               //Spawn
               
-              monsters[self.beacons[row].uuid.uuidString] = db.generateMonster()
+              monsters[self.beacons[row].uuid.uuidString] = db.generateMonster((self.tbvc?.player.level)!)
               let imageView = UIImageView(frame: CGRect(x: monsterBtnView.center.x + CGFloat(db.getRandomInt(20)), y: monsterBtnView.center.y + CGFloat(db.getRandomInt(20)), width: 30.0, height: 30.0))
               
               imageView.image = monsters[self.beacons[row].uuid.uuidString]?.icon
               
               imageView.tag = row
+              
               
               let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(imageTapped(tapGestureRecognizer:)))
               imageView.isUserInteractionEnabled = true
@@ -327,9 +334,18 @@ extension MainViewController: CLLocationManagerDelegate {
               self.view.bringSubview(toFront: imageView)
                 
               tbvc?.spawnPoint[self.beacons[row].uuid.uuidString] = 1
+              
+              monstersImageView[self.beacons[row].uuid.uuidString] = imageView
             }
-            else if(tbvc?.spawnPoint[self.beacons[row].uuid.uuidString] != 1){
+            else if (proximity == "Far" || proximity == "Unknown") && tbvc?.spawnPoint[self.beacons[row].uuid.uuidString] == 1 {
               //Delete
+              print("Far")
+              
+              monstersImageView[self.beacons[row].uuid.uuidString]?.removeFromSuperview()
+              
+              monsters[self.beacons[row].uuid.uuidString] = nil
+              
+              tbvc?.spawnPoint[self.beacons[row].uuid.uuidString] = 0
           }
             
             

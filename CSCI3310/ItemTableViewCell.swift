@@ -30,7 +30,8 @@ class ItemTableViewCell: UITableViewCell {
       if let item = item {
         itemImageView.image = item.icon
         itemNameView.text = item.name
-        itemRareness.text = String(item.rareness.rawValue)
+        
+        itemRareness.text = "\(item.rareness)"
         
       } else {
         itemNameView.text = "Default"

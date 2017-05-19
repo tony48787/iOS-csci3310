@@ -61,7 +61,7 @@ class FightBossViewController: UIViewController {
     
     self.view.isHidden = true
     
-    tbvc?.monster = db.generateMonster()
+    tbvc?.monster = db.generateBossMonster((tbvc?.player.level)!)
     
     var monsterDetail = ""
     if let name = tbvc?.monster?.name,
@@ -212,9 +212,21 @@ class FightBossViewController: UIViewController {
       
       let remaining = (hp - Float(self.count * (self.tbvc?.player.dmg)!)) / hp
       
-      self.hpTextView.text = "\((hp - Float(self.count * (self.tbvc?.player.dmg)!))) / \(hp)"
-      
       self.progressView.setProgress(remaining, animated: true)
+      
+      var remainingText = "\((hp - Float(self.count * (self.tbvc?.player.dmg)!)))"
+      if (hp - Float(self.count * (self.tbvc?.player.dmg)!)) < 0 {
+        remainingText = "0"
+      }
+      self.hpTextView.text = "\(remainingText) / \(hp)"
+      
+      let monsterShakeAnimation = CABasicAnimation(keyPath: "position")
+      monsterShakeAnimation.duration = 0.05
+      monsterShakeAnimation.repeatCount = 5
+      monsterShakeAnimation.autoreverses = true
+      monsterShakeAnimation.fromValue = CGPoint(x:self.monsterView.center.x - 10, y:self.monsterView.center.y)
+      monsterShakeAnimation.toValue = CGPoint(x:self.monsterView.center.x + 10, y:self.monsterView.center.y)
+      self.monsterView.layer.add(monsterShakeAnimation, forKey: "position")
       
       if(remaining <= 0){
         self.playerWon()
@@ -229,8 +241,14 @@ class FightBossViewController: UIViewController {
   
   func playerWon() {
     self.tbvc?.player.levelUp()
+    self.tbvc?.player.updateStatus()
+    if let level = self.tbvc?.player.level{
+      self.alert("Congrats", "Your level is lv\(level)", UIImage(named: "success")!)
+    } else {
+      self.alert("Congrats", "Your level is up", UIImage(named: "success")!)
+    }
     
-    self.alert("Congrats", "Your level is lv\(String(describing: self.tbvc?.player.level))", UIImage(named: "success")!)
+    
     
   }
   

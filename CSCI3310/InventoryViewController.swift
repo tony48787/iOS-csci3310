@@ -24,15 +24,8 @@ class InventoryViewController: UIViewController {
     
     tbvc = self.tabBarController as? ParentTBViewController
     
-    guard let player = tbvc?.player else { return }
-    
     tableView.dataSource = self
     tableView.delegate = self
-    
-    playerName.text = player.name
-    playerLevel.text = String(describing: player.level)
-    playerHP.text = String(describing: player.hp)
-    playerDMG.text = String(describing: player.dmg)
     
     // Do any additional setup after loading the view.
   }
@@ -41,9 +34,9 @@ class InventoryViewController: UIViewController {
     tableView.reloadData()
     guard let player = tbvc?.player else { return }
     playerName.text = player.name
-    playerLevel.text = String(describing: player.level)
-    playerHP.text = String(describing: player.hp)
-    playerDMG.text = String(describing: player.dmg)
+    playerLevel.text = "Level: \(player.level)"
+    playerHP.text = "HP: \(player.hp)"
+    playerDMG.text = "Dmg: \(player.dmg)"
   }
   
   override func didReceiveMemoryWarning() {
@@ -85,6 +78,7 @@ extension InventoryViewController : UITableViewDataSource {
     if editingStyle == .delete {
       tableView.beginUpdates()
       self.tbvc?.player.inventory.remove(at: indexPath.row)
+      self.tbvc?.player.updateStatus()
       tableView.deleteRows(at: [indexPath], with: .automatic)
       tableView.endUpdates()
     

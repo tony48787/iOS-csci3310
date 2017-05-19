@@ -23,7 +23,7 @@ class BeaconTableViewCell: UITableViewCell {
   var beacon: Beacon? = nil {
     didSet {
       if let beacon = beacon {
-        imgIcon.image = Icons(rawValue: beacon.icon)?.image()
+        imgIcon.image = UIImage(named: "egg")
         lblName.text = beacon.name
         lblLocation.text = beacon.locationString()
         

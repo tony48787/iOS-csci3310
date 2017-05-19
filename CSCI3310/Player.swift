@@ -38,8 +38,8 @@ public class Player {
       totalDMG += item.dmg
     }
     
-    self.hp = totalHP
-    self.dmg = totalDMG
+    self.hp = totalHP + level
+    self.dmg = totalDMG + level
     
   }
   

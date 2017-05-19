@@ -16,7 +16,13 @@ public class db {
   "The Agile Presence", "The Dangerous Teeth", "The Hidden Hunting Yak",
   "The Barb-Tailed Sun Bear"]
   
-  static func generateItem() -> Item {
+  static var baseMonsterHP = 50
+  
+  static var baseBossMonsterHP = 500
+  
+  static var baseItemDMG = 3
+  
+  static func generateItem(_ level: Int) -> Item {
     
     let randomIndex = getRandomInt(self.itemName.count)
     
@@ -26,7 +32,7 @@ public class db {
     
     let hp = getRandomInt(10)
     
-    let dmg = getRandomInt(10)
+    let dmg = getRandomInt(10) + level * baseItemDMG
     
     let random = getRandomInt(1)
     
@@ -41,13 +47,28 @@ public class db {
     return Item(name, rareness, hp, dmg, icon)
   }
   
-  static func generateMonster() -> Monster {
+  static func generateMonster(_ level: Int) -> Monster {
   
     let randomIndex = getRandomInt(self.monsterName.count)
     
     let name = self.monsterName[randomIndex]
     
-    let hp = getRandomInt(100)
+    let hp = getRandomInt(100) + level * baseMonsterHP * Int(pow(1.1, Float(level)))
+    
+    let dmg = getRandomInt(20)
+    
+    let icon = getRandomIcon()
+    
+    return Monster(name, hp, dmg, icon)
+  }
+  
+  static func generateBossMonster(_ level: Int) -> Monster {
+    
+    let randomIndex = getRandomInt(self.monsterName.count)
+    
+    let name = self.monsterName[randomIndex]
+    
+    let hp = getRandomInt(500) * Int(pow(1.6, Float(level))) + level * baseBossMonsterHP * Int(pow(1.3, Float(level)))
     
     let dmg = getRandomInt(20)
     

@@ -48,7 +48,7 @@ class Beacon: NSObject, NSCoding {
   }
   
   func getProximity() -> String {
-    guard let beacon = beacon else { return "unknown" }
+    guard let beacon = beacon else { return "Unknown" }
     return nameForProximity(beacon.proximity)
   }
   

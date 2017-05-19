@@ -49,11 +49,6 @@ class MiniGameViewController: UIViewController {
     monsterView.image = monster.icon
     progressView.setProgress(1.0, animated: true)
     
-    // HP Bar Outline
-    progressView.layer.borderWidth = 0.5
-    progressView.layer.borderColor = UIColor.black.cgColor
-    progressView.transform = progressView.transform.scaledBy(x: 1, y: 10)
-    
   
   }
   
@@ -72,7 +67,16 @@ class MiniGameViewController: UIViewController {
     self.count = 0
     self.readyTimeCount = 3
     self.gameTimeCount = 30
-    monitorUpdate()
+    
+    // HP Bar Outline
+    progressView.layer.borderWidth = 0.5
+    progressView.layer.borderColor = UIColor.black.cgColor
+    progressView.transform = progressView.transform.scaledBy(x: 1, y: 10)
+    
+    progressView.setProgress(1.0, animated: false)
+    
+    timerProgressView.setProgress(1.0, animated: false)
+    
     timer = Timer.scheduledTimer(timeInterval: 1,
                                  target: self, selector: #selector(ready), userInfo: nil, repeats: true)
     timer?.fire()
@@ -99,6 +103,11 @@ class MiniGameViewController: UIViewController {
     updateTimer(self.readyTimeCount, 3)
     if(self.readyTimeCount == 0){
       timer?.invalidate()
+      
+      timerTextView.text = "Go!";
+      
+      timerProgressView.setProgress(1.0, animated: false)
+      
       timer = Timer.scheduledTimer(timeInterval: 1,
                                    target: self, selector: #selector(go), userInfo: nil, repeats: true)
       timer?.fire()
@@ -131,7 +140,12 @@ class MiniGameViewController: UIViewController {
           
           let remaining = (hp - Float(self.count * (self.tbvc?.player.dmg)!)) / hp
           
-          self.hpTextView.text = "\((hp - Float(self.count * (self.tbvc?.player.dmg)!))) / \(hp)"
+          
+          var remainingText = "\((hp - Float(self.count * (self.tbvc?.player.dmg)!)))"
+          if (hp - Float(self.count * (self.tbvc?.player.dmg)!)) < 0 {
+            remainingText = "0"
+          }
+          self.hpTextView.text = "\(remainingText) / \(hp)"
           
             self.progressView.setProgress(remaining, animated: true)
             
@@ -148,7 +162,7 @@ class MiniGameViewController: UIViewController {
             self.motionManager.stopAccelerometerUpdates()
             
             //Generate random Item
-            let item = db.generateItem()
+            let item = db.generateItem((self.tbvc?.player.level)!)
             
             self.tbvc?.player.addItem(item)
             
@@ -165,9 +179,9 @@ class MiniGameViewController: UIViewController {
   func alert(_ title: String, _ message: String, _ image: UIImage){
     let detailAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
     
-    let imageView = UIImageView(frame: CGRect(x: 10, y: 10, width: 200, height: 100))
-    imageView.image = image
-    detailAlert.view.addSubview(imageView)
+//    let imageView = UIImageView(frame: CGRect(x: 10, y: 10, width: 200, height: 100))
+//    imageView.image = image
+//    detailAlert.view.addSubview(imageView)
     
     detailAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
       (alert: UIAlertAction!) in
