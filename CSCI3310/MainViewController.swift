@@ -275,11 +275,16 @@ extension MainViewController: CLLocationManagerDelegate {
                 print(nearest_beacon2)
                 if (nearest_beacon1 == 0 && nearest_beacon2 == 1) {
                     print("case1")
-                    monsterBtnView.center = CGPoint(x: 260, y: 250)
+                    print("diff: ")
+                    print((curr_dists[nearest_beacon1]/curr_dists[nearest_beacon2]))
+                    let offset = 79 * (curr_dists[nearest_beacon1]/curr_dists[nearest_beacon2])
+                    monsterBtnView.center = CGPoint(x: 260, y: 250 - offset)
                 }
                 if (nearest_beacon1 == 1 && nearest_beacon2 == 0) {
                     print("case2")
-                    monsterBtnView.center = CGPoint(x: 260, y: 92)
+                    print("diff: ")
+                    let offset = 79 * (curr_dists[nearest_beacon1]/curr_dists[nearest_beacon2])
+                    monsterBtnView.center = CGPoint(x: 260, y: 92 + offset)
                 }
                 if (nearest_beacon1 == 1 && nearest_beacon2 == 2) {
                     print("case3")
@@ -290,7 +295,7 @@ extension MainViewController: CLLocationManagerDelegate {
                     monsterBtnView.center = CGPoint(x: 109, y: 92)
                 }
             }
-            prev_dist = curr_dists[nearest_beacon1]
+//            prev_dist = curr_dists[nearest_beacon1]
         }
         
         //Spawn a monster if close
