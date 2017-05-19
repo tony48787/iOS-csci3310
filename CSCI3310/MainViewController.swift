@@ -52,7 +52,7 @@ class MainViewController: UIViewController {
     
     override func viewDidDisappear(_ animated: Bool) {
         monsterBtnView.isUserInteractionEnabled = false
-        monsterBtnView.setImage(UIImage(named: "egg"), for: .normal)
+        monsterBtnView.setImage(UIImage(named: "marker"), for: .normal)
         spawnCount = 0
     }
     
