@@ -13,10 +13,16 @@ class MiniGameViewController: UIViewController {
   
   @IBOutlet weak var monsterView: UIImageView!
   @IBOutlet weak var progressView: UIProgressView!
+  @IBOutlet weak var timerTextView: UILabel!
+  @IBOutlet weak var timerProgressView: UIProgressView!
+  @IBOutlet weak var hpTextView: UILabel!
+  
+  @IBOutlet weak var monsterNameTextView: UILabel!
+  
   
   var count = 0
   var readyTimeCount = 3
-  var gameTimeCount = 10
+  var gameTimeCount = 30
   var motionManager = CMMotionManager()
   
   var monster : Monster?
@@ -25,7 +31,7 @@ class MiniGameViewController: UIViewController {
   
   var tbvc: ParentTBViewController?
   
-  var timer: Timer!
+  var timer: Timer?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -36,34 +42,29 @@ class MiniGameViewController: UIViewController {
     
     self.count = 0
     
+    monsterNameTextView.text = monster.name
+    hpTextView.text = "\(monster.hp) / \(monster.hp)"
     
     
     monsterView.image = monster.icon
     progressView.setProgress(1.0, animated: true)
-    // Swape Motion
-    let directions: [UISwipeGestureRecognizerDirection] = [.right, .left, .up, .down]
-    for direction in directions {
-      let gesture = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
-      gesture.direction = direction
-      self.view.addGestureRecognizer(gesture)
-    }
     
-    // Shake Motion
+    // HP Bar Outline
+    progressView.layer.borderWidth = 0.5
+    progressView.layer.borderColor = UIColor.black.cgColor
+    progressView.transform = progressView.transform.scaledBy(x: 1, y: 10)
     
-    
-    monitorUpdate()
+  
   }
   
   override func viewWillAppear(_ animated: Bool) {
-    timer = Timer.scheduledTimer(timeInterval: 1,
-                                 target: self, selector: #selector(ready), userInfo: nil, repeats: true)
-    timer.fire()
+    timer?.invalidate()
   }
   
   override func viewDidDisappear(_ animated: Bool) {
     //De register
     self.motionManager.stopAccelerometerUpdates()
-    timer.invalidate()
+    timer?.invalidate()
   }
   
   override func viewDidAppear(_ animated: Bool) {
@@ -72,7 +73,11 @@ class MiniGameViewController: UIViewController {
     self.readyTimeCount = 3
     self.gameTimeCount = 30
     monitorUpdate()
-    timer.invalidate()
+    timer = Timer.scheduledTimer(timeInterval: 1,
+                                 target: self, selector: #selector(ready), userInfo: nil, repeats: true)
+    timer?.fire()
+    
+    updateTimer(self.readyTimeCount, 3)
   }
   
   override func didReceiveMemoryWarning() {
@@ -82,44 +87,35 @@ class MiniGameViewController: UIViewController {
     
   }
   
+  func updateTimer(_ remaining: Int, _ total: Int){
+    let progress = Float(remaining) / Float(total)
+    timerProgressView.setProgress(progress, animated: true)
+    timerTextView.text = "\(remaining)";
+  }
+  
   @objc func ready(){
     self.readyTimeCount -= 1
     //Update UI
-    print(self.readyTimeCount)
+    updateTimer(self.readyTimeCount, 3)
     if(self.readyTimeCount == 0){
-      timer.invalidate()
+      timer?.invalidate()
       timer = Timer.scheduledTimer(timeInterval: 1,
                                    target: self, selector: #selector(go), userInfo: nil, repeats: true)
-      timer.fire()
+      timer?.fire()
+      // Shake Motion
+      monitorUpdate()
     }
   }
   
   @objc func go(){
     self.gameTimeCount -= 1
     //Update UI
-    print(self.gameTimeCount)
+    updateTimer(self.gameTimeCount, 30)
     if(self.gameTimeCount == 0){
       timer?.invalidate()
       timer = nil
       //Force end game
-      alert("Time's Up!", "We are sorry to inform you that you are not qualified to get this item!")
-    }
-  }
-  
-  func respondToSwipeGesture(gesture: UIGestureRecognizer) {
-    if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-      switch swipeGesture.direction {
-      case UISwipeGestureRecognizerDirection.right:
-        print("Swiped right")
-      case UISwipeGestureRecognizerDirection.down:
-        print("Swiped down")
-      case UISwipeGestureRecognizerDirection.left:
-        print("Swiped left")
-      case UISwipeGestureRecognizerDirection.up:
-        print("Swiped up")
-      default:
-        break
-      }
+      alert("Time's Up!", "We are sorry to inform you that you are not qualified to get this item!", UIImage(named: "egg")!)
     }
   }
   
@@ -135,10 +131,17 @@ class MiniGameViewController: UIViewController {
           
           let remaining = (hp - Float(self.count * (self.tbvc?.player.dmg)!)) / hp
           
-          print(remaining)
+          self.hpTextView.text = "\((hp - Float(self.count * (self.tbvc?.player.dmg)!))) / \(hp)"
           
-          self.progressView.setProgress(remaining, animated: true)
-          
+            self.progressView.setProgress(remaining, animated: true)
+            
+            let monsterShakeAnimation = CABasicAnimation(keyPath: "position")
+            monsterShakeAnimation.duration = 0.05
+            monsterShakeAnimation.repeatCount = 5
+            monsterShakeAnimation.autoreverses = true
+            monsterShakeAnimation.fromValue = CGPoint(x:self.monsterView.center.x - 10, y:self.monsterView.center.y)
+            monsterShakeAnimation.toValue = CGPoint(x:self.monsterView.center.x + 10, y:self.monsterView.center.y)
+            self.monsterView.layer.add(monsterShakeAnimation, forKey: "position")
           
           if(remaining <= 0){
             //De register
@@ -149,7 +152,9 @@ class MiniGameViewController: UIViewController {
             
             self.tbvc?.player.addItem(item)
             
-            self.alert("You won!", "Check your Inventory.")
+            self.tbvc?.player.updateStatus()
+            
+            self.alert("You won!", "Check your Inventory.", UIImage(named: "success")!)
             
           }
         }
@@ -157,8 +162,12 @@ class MiniGameViewController: UIViewController {
     }
   }
   
-  func alert(_ title: String, _ message: String){
+  func alert(_ title: String, _ message: String, _ image: UIImage){
     let detailAlert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+    
+    let imageView = UIImageView(frame: CGRect(x: 10, y: 10, width: 200, height: 100))
+    imageView.image = image
+    detailAlert.view.addSubview(imageView)
     
     detailAlert.addAction(UIAlertAction(title: "OK", style: .default, handler: {
       (alert: UIAlertAction!) in

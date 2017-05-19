@@ -49,6 +49,11 @@ class MainViewController: UIViewController {
     monsterBtnView.setImage(UIImage(named: "egg"), for: .normal)
     self.view.bringSubview(toFront: monsterBtnView)
     spawnCount = 0
+    stopBeacons()
+  }
+  
+  override func viewDidAppear(_ animated: Bool) {
+    startBeacons()
   }
   
   override func didReceiveMemoryWarning() {
@@ -70,7 +75,18 @@ class MainViewController: UIViewController {
       beacons.append(beacon)
       startMonitoringItem(beacon)
     }
-    print("Loaded", beacons.count)
+  }
+  
+  func startBeacons(){
+    for beacon in beacons {
+      startMonitoringItem(beacon)
+    }
+  }
+  
+  func stopBeacons(){
+    for beacon in beacons {
+      stopMonitoringItem(beacon)
+    }
   }
   
   //  func persistItems() {

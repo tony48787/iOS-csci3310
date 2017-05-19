@@ -39,6 +39,11 @@ class InventoryViewController: UIViewController {
   
   override func viewWillAppear(_ animated: Bool) {
     tableView.reloadData()
+    guard let player = tbvc?.player else { return }
+    playerName.text = player.name
+    playerLevel.text = String(describing: player.level)
+    playerHP.text = String(describing: player.hp)
+    playerDMG.text = String(describing: player.dmg)
   }
   
   override func didReceiveMemoryWarning() {

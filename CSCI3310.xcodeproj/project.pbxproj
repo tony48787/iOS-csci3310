@@ -423,7 +423,7 @@
 				DEVELOPMENT_TEAM = NP45BW7DPL;
 				INFOPLIST_FILE = CSCI3310/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.project.CSCI3310;
+				PRODUCT_BUNDLE_IDENTIFIER = self.project.CSCI3310ss;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -436,7 +436,7 @@
 				DEVELOPMENT_TEAM = NP45BW7DPL;
 				INFOPLIST_FILE = CSCI3310/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.project.CSCI3310;
+				PRODUCT_BUNDLE_IDENTIFIER = self.project.CSCI3310ss;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};

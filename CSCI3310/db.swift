@@ -28,7 +28,15 @@ public class db {
     
     let dmg = getRandomInt(10)
     
-    let icon = getRandomIcon()
+    let random = getRandomInt(1)
+    
+    var icon = UIImage()
+    
+    if(random == 0){
+      icon = getRandomArmor()
+    } else {
+      icon = getRandomWeapon()
+    }
     
     return Item(name, rareness, hp, dmg, icon)
   }
@@ -39,7 +47,7 @@ public class db {
     
     let name = self.monsterName[randomIndex]
     
-    let hp = getRandomInt(20)
+    let hp = getRandomInt(100)
     
     let dmg = getRandomInt(20)
     
@@ -56,6 +64,18 @@ public class db {
     let randomIndex = getRandomInt(10)
     
     return UIImage(named: "icon\(randomIndex).png")!
+  }
+  
+  static func getRandomArmor() -> UIImage {
+    let randomIndex = getRandomInt(3)
+    
+    return UIImage(named: "armor\(randomIndex).png")!
+  }
+  
+  static func getRandomWeapon() -> UIImage {
+    let randomIndex = getRandomInt(3)
+    
+    return UIImage(named: "sword\(randomIndex).png")!
   }
   
 }

@@ -43,6 +43,10 @@ public class Player {
     
   }
   
+  func levelUp(){
+    self.level += 1
+  }
+  
   func save() {
     //TODO
   }
